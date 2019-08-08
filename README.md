@@ -6,3 +6,6 @@
 
 * gbt：猜比特
 *luckpoint:幸运点游戏
+* ChainIDE：ChainIDE项目
+* Last Trip：区块链游戏Last Trip
+
