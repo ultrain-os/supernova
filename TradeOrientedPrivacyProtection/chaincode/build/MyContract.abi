@@ -1,0 +1,314 @@
+{
+  "version": "ultraio:1.0",
+  "types": [
+    {
+      "new_type_name": "u32",
+      "type": "uint32"
+    },
+    {
+      "new_type_name": "account_name",
+      "type": "name"
+    }
+  ],
+  "structs": [
+    {
+      "fields": [
+        {
+          "name": "id",
+          "type": "string"
+        },
+        {
+          "name": "pk",
+          "type": "string"
+        },
+        {
+          "name": "category",
+          "type": "u32"
+        },
+        {
+          "name": "subcategory",
+          "type": "u32"
+        },
+        {
+          "name": "timestamp",
+          "type": "string"
+        }
+      ],
+      "base": "",
+      "name": "addPersons"
+    },
+    {
+      "fields": [
+        {
+          "name": "account",
+          "type": "account_name"
+        }
+      ],
+      "base": "",
+      "name": "pubkeyOf"
+    },
+    {
+      "fields": [
+        {
+          "name": "id",
+          "type": "string"
+        },
+        {
+          "name": "pk",
+          "type": "string"
+        },
+        {
+          "name": "category",
+          "type": "u32"
+        },
+        {
+          "name": "subcategory",
+          "type": "u32"
+        },
+        {
+          "name": "timestamp",
+          "type": "string"
+        }
+      ],
+      "base": "",
+      "name": "Person"
+    },
+    {
+      "fields": [
+        {
+          "name": "transid",
+          "type": "string"
+        },
+        {
+          "name": "buyerPK",
+          "type": "string"
+        },
+        {
+          "name": "expressPK",
+          "type": "string"
+        },
+        {
+          "name": "buyerENCInfo",
+          "type": "string"
+        },
+        {
+          "name": "goodsENCInfo",
+          "type": "string"
+        },
+        {
+          "name": "timestamp",
+          "type": "string"
+        }
+      ],
+      "base": "",
+      "name": "Transaction"
+    },
+    {
+      "fields": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "amount",
+          "type": "u32"
+        },
+        {
+          "name": "receiver",
+          "type": "string"
+        },
+        {
+          "name": "phone",
+          "type": "string"
+        },
+        {
+          "name": "receiverADDR",
+          "type": "string"
+        },
+        {
+          "name": "buyerPK",
+          "type": "string"
+        },
+        {
+          "name": "expressPK",
+          "type": "string"
+        },
+        {
+          "name": "sellerPK",
+          "type": "string"
+        },
+        {
+          "name": "transid",
+          "type": "string"
+        }
+      ],
+      "base": "",
+      "name": "Goods"
+    },
+    {
+      "fields": [
+        {
+          "name": "transid",
+          "type": "string"
+        },
+        {
+          "name": "buyerPK",
+          "type": "string"
+        },
+        {
+          "name": "expressPK",
+          "type": "string"
+        },
+        {
+          "name": "buyerENCInfo",
+          "type": "string"
+        },
+        {
+          "name": "goodsENCInfo",
+          "type": "string"
+        },
+        {
+          "name": "timestamp",
+          "type": "string"
+        }
+      ],
+      "base": "",
+      "name": "addTrans"
+    },
+    {
+      "fields": [
+        {
+          "name": "transid",
+          "type": "string"
+        }
+      ],
+      "base": "",
+      "name": "searchTransE"
+    },
+    {
+      "fields": [
+        {
+          "name": "transid",
+          "type": "string"
+        }
+      ],
+      "base": "",
+      "name": "searchTransS"
+    },
+    {
+      "fields": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "amount",
+          "type": "u32"
+        },
+        {
+          "name": "receiver",
+          "type": "string"
+        },
+        {
+          "name": "phone",
+          "type": "string"
+        },
+        {
+          "name": "receiverADDR",
+          "type": "string"
+        },
+        {
+          "name": "buyerPK",
+          "type": "string"
+        },
+        {
+          "name": "expressPK",
+          "type": "string"
+        },
+        {
+          "name": "sellerPK",
+          "type": "string"
+        },
+        {
+          "name": "transid",
+          "type": "string"
+        }
+      ],
+      "base": "",
+      "name": "addGoods"
+    }
+  ],
+  "actions": [
+    {
+      "ricardian_contract": "",
+      "name": "addPersons",
+      "type": "addPersons",
+      "ability": "normal"
+    },
+    {
+      "ricardian_contract": "",
+      "name": "pubkeyOf",
+      "type": "pubkeyOf",
+      "ability": "normal"
+    },
+    {
+      "ricardian_contract": "",
+      "name": "addTrans",
+      "type": "addTrans",
+      "ability": "normal"
+    },
+    {
+      "ricardian_contract": "",
+      "name": "searchTransE",
+      "type": "searchTransE",
+      "ability": "normal"
+    },
+    {
+      "ricardian_contract": "",
+      "name": "searchTransS",
+      "type": "searchTransS",
+      "ability": "normal"
+    },
+    {
+      "ricardian_contract": "",
+      "name": "addGoods",
+      "type": "addGoods",
+      "ability": "normal"
+    }
+  ],
+  "tables": [
+    {
+      "index_type": "i64",
+      "keys_names": [
+        "currency"
+      ],
+      "keys_types": [
+        "uint64"
+      ],
+      "name": "persons",
+      "type": "Person"
+    },
+    {
+      "index_type": "i64",
+      "keys_names": [
+        "currency"
+      ],
+      "keys_types": [
+        "uint64"
+      ],
+      "name": "transactions",
+      "type": "Transaction"
+    },
+    {
+      "index_type": "i64",
+      "keys_names": [
+        "currency"
+      ],
+      "keys_types": [
+        "uint64"
+      ],
+      "name": "goods",
+      "type": "Goods"
+    }
+  ]
+}
