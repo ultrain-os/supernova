@@ -1,16 +1,15 @@
-import { Action } from "ultrain-ts-lib/src/action";
-import { Asset, SYS, StringToSymbol } from "ultrain-ts-lib/src/asset";
+import { Action } from 'ultrain-ts-lib/src/action';
+import { Asset, SYS, StringToSymbol } from 'ultrain-ts-lib/src/asset';
 import { Contract } from 'ultrain-ts-lib/src/contract';
 import { Log } from 'ultrain-ts-lib/src/log';
 import { EventObject, emit } from 'ultrain-ts-lib/src/events';
 import { NAME, RNAME } from 'ultrain-ts-lib/src/account';
 import { Return } from 'ultrain-ts-lib/src/return';
-import { now } from "ultrain-ts-lib/src/time";
+import { now } from 'ultrain-ts-lib/src/time';
 
+import { processBattleResult, BattleResult } from './battle';
 
-import {processBattleResult, BattleResult} from './battle';
-
-import {BattleStatus, UnitStatus} from './data_in_memory';
+import { BattleStatus, UnitStatus } from './data_in_memory';
 
 import {
   Unit,
@@ -25,26 +24,33 @@ import {
   User
 } from './data_in_db';
 
-import {random, u16ToString, unitToStr, itemToStr} from './helper';
-
+import { random, u16ToString, unitToStr, itemToStr } from './helper';
 
 const UNIT_LIMIT: u8 = 3;
 const ITEM_LIMIT: u8 = 3;
 const MAX_ENERGY: u8 = 5;
 
+const tbUnit: string = 'tb.unit';
+const tbItem: string = 'tb.item';
+const tbRID: string = 'tb.rid';
+const tbUnitInfo: string = 'tb.unitinfo';
+const tbItemInfo: string = 'tb.iteminfo';
+const tbStage: string = 'tb.stage';
+const tbStageBattle: string = 'tb.stagebat';
+const tbStageProgress: string = 'tb.stageprog';
+const tbUser: string = 'tb.user';
 
-const global = "global";
+const global: string = 'global';
 
-
-@database(Unit, 'tb.unit')
-@database(Item, 'tb.item')
-@database(RID, 'tb.rid')
-@database(UnitInfo, 'tb.unitinfo')
-@database(ItemInfo, 'tb.iteminfo')
-@database(Stage, 'tb.stage')
-@database(StageBattle, 'tb.stagebat')
-@database(StageProgress, 'tb.stageprog')
-@database(User, 'tb.user')
+@database(Unit, tbUnit)
+@database(Item, tbItem)
+@database(RID, tbRID)
+@database(UnitInfo, tbUnitInfo)
+@database(ItemInfo, tbItemInfo)
+@database(Stage, tbStage)
+@database(StageBattle, tbStageBattle)
+@database(StageProgress, tbStageProgress)
+@database(User, tbUser)
 class Game extends Contract {
 
   dbUnit: DBManager<Unit>;
@@ -58,13 +64,13 @@ class Game extends Contract {
   constructor(code: u64) {
     super(code);
 
-    this.dbUnit = new DBManager<Unit>(NAME('tb.unit'), NAME(global));
-    this.dbItem = new DBManager<Item>(NAME('tb.item'), NAME(global));
-    this.dbRID = new DBManager<RID>(NAME('tb.rid'), NAME(global));
-    this.dbUnitInfo = new DBManager<UnitInfo>(NAME('tb.unitinfo'), NAME(global));
-    this.dbItemInfo = new DBManager<ItemInfo>(NAME('tb.iteminfo'), NAME(global));
-    this.dbStage = new DBManager<Stage>(NAME('tb.stage'), NAME(global));
-    this.dbUser = new DBManager<User>(NAME('tb.user'), NAME(global));
+    this.dbUnit = new DBManager<Unit>(NAME(tbUnit), NAME(global));
+    this.dbItem = new DBManager<Item>(NAME(tbItem), NAME(global));
+    this.dbRID = new DBManager<RID>(NAME(tbRID), NAME(global));
+    this.dbUnitInfo = new DBManager<UnitInfo>(NAME(tbUnitInfo), NAME(global));
+    this.dbItemInfo = new DBManager<ItemInfo>(NAME(tbItemInfo), NAME(global));
+    this.dbStage = new DBManager<Stage>(NAME(tbStage), NAME(global));
+    this.dbUser = new DBManager<User>(NAME(tbUser), NAME(global));
   }
 
   @action
@@ -83,12 +89,12 @@ class Game extends Contract {
           luckStep: u16,
           price: u64,
           priceStep: u64): void {
-    ultrain_assert(Action.sender == this.receiver, "contract owner only");
+    ultrain_assert(Action.sender == this.receiver, 'contract owner only');
 
-    let existing = this.dbUnit.exists(unitId);
-    ultrain_assert(!existing, "unit already exists");
+    var existing = this.dbUnit.exists(unitId);
+    ultrain_assert(!existing, 'unit already exists');
 
-    let unit = new Unit();
+    var unit = new Unit();
     unit.unitId = unitId;
     unit.hp = hp;
     unit.hpStep = hpStep;
@@ -122,12 +128,12 @@ class Game extends Contract {
           agility: u16,
           luck: u16,
           worth: u64): void {
-    ultrain_assert(Action.sender == this.receiver, "contract owner only");
+    ultrain_assert(Action.sender == this.receiver, 'contract owner only');
 
-    let existing = this.dbItem.exists(itemId);
-    ultrain_assert(!existing, "item already exists");
+    var existing = this.dbItem.exists(itemId);
+    ultrain_assert(!existing, 'item already exists');
 
-    let item = new Item();
+    var item = new Item();
     item.itemId = itemId;
     item.hp = hp;
     item.attack = attack;
@@ -149,12 +155,12 @@ class Game extends Contract {
                    dropChanceArray: u16[],
                    dropSGTLow: u64,
                    dropSGTHigh: u64): void {
-    ultrain_assert(Action.sender == this.receiver, "contract owner only");
-    ultrain_assert(npcUnitIdArray.length == UNIT_LIMIT, "invalid input");
-    ultrain_assert(npcLevelArray.length == UNIT_LIMIT, "invalid input");
-    ultrain_assert(dropItemIdArray.length == dropChanceArray.length, "invalid input");
+    ultrain_assert(Action.sender == this.receiver, 'contract owner only');
+    ultrain_assert(npcUnitIdArray.length == UNIT_LIMIT, 'invalid input');
+    ultrain_assert(npcLevelArray.length == UNIT_LIMIT, 'invalid input');
+    ultrain_assert(dropItemIdArray.length == dropChanceArray.length, 'invalid input');
 
-    const dbStageBattle = new DBManager<StageBattle>(NAME('tb.stagebat'), stageId);
+    const dbStageBattle = new DBManager<StageBattle>(NAME(tbStageBattle), stageId);
 
     const sb = new StageBattle();
     sb.battleIndex = battleIndex;
@@ -165,7 +171,7 @@ class Game extends Contract {
     sb.dropSGTLow = dropSGTLow;
     sb.dropSGTHigh = dropSGTHigh;
 
-    let existing = dbStageBattle.exists(battleIndex);
+    var existing = dbStageBattle.exists(battleIndex);
 
     if (existing) {
       dbStageBattle.modify(sb);
@@ -178,14 +184,14 @@ class Game extends Contract {
   setStage(stageId: u64,
            dependencyStageId: u64,
            battleAmount: u8): void {
-    ultrain_assert(Action.sender == this.receiver, "contract owner only");
+    ultrain_assert(Action.sender == this.receiver, 'contract owner only');
 
     const stage = new Stage();
     stage.stageId = stageId;
     stage.dependencyStageId = dependencyStageId;
     stage.battleAmount = battleAmount;
 
-    let existing = this.dbStage.exists(stageId);
+    var existing = this.dbStage.exists(stageId);
 
     if (existing) {
       this.dbStage.modify(stage);
@@ -212,12 +218,12 @@ class Game extends Contract {
     this.dbUser.emplace(user);
   }
 
-  @action("pureview")
+  @action('pureview')
   isStarted(): boolean {
     return this.dbUser.exists(Action.sender);
   }
 
-  @action("pureview")
+  @action('pureview')
   canPlay(stageId: u64, battleIndex: u64): boolean {
     const stage = new Stage();
     const stageExisting = this.dbStage.get(stageId, stage);
@@ -227,7 +233,7 @@ class Game extends Contract {
     }
 
     if (stage.dependencyStageId) {
-      const dbP1 = new DBManager<StageProgress>(NAME('tb.stageprog'), stage.dependencyStageId);
+      const dbP1 = new DBManager<StageProgress>(NAME(tbStageProgress), stage.dependencyStageId);
       const stageP1 = new StageProgress();
       const existingP1 = dbP1.get(Action.sender, stageP1);
       if (!existingP1 || !stageP1.finished) {
@@ -235,7 +241,7 @@ class Game extends Contract {
       }
     }
 
-    const dbP2 = new DBManager<StageProgress>(NAME('tb.stageprog'), stageId);
+    const dbP2 = new DBManager<StageProgress>(NAME(tbStageProgress), stageId);
     const stageP2 = new StageProgress();
     const existingP2 = dbP2.get(Action.sender, stageP2);
 
@@ -246,9 +252,9 @@ class Game extends Contract {
     return battleIndex <= stageP2.battleIndex;
   }
 
-  @action("pureview")
+  @action('pureview')
   getProgress(stageId: u64): u64 {
-    const db = new DBManager<StageProgress>(NAME('tb.stageprog'), stageId);
+    const db = new DBManager<StageProgress>(NAME(tbStageProgress), stageId);
     const stageP = new StageProgress();
     const existingP = db.get(Action.sender, stageP);
     if (!existingP) {
@@ -274,7 +280,7 @@ class Game extends Contract {
       return;
     }
 
-    const db = new DBManager<StageProgress>(NAME('tb.stageprog'), stageId);
+    const db = new DBManager<StageProgress>(NAME(tbStageProgress), stageId);
     const stageP = new StageProgress();
     const existingP = db.get(Action.sender, stageP);
 
@@ -323,10 +329,10 @@ class Game extends Contract {
     ultrain_assert(userExisting, 'user exists');
     ultrain_assert(user.unitIdArray.indexOf(unitId) < 0, 'already have unit');
 
-    const unitPrice: Asset = new Asset(unit.price, StringToSymbol(4, "UGAS"));
-    ultrain_assert(amount.gte(unitPrice), "need to pay enough");
+    const unitPrice: Asset = new Asset(unit.price, StringToSymbol(4, 'UGAS'));
+    ultrain_assert(amount.gte(unitPrice), 'need to pay enough');
 
-    Asset.transfer(Action.sender, Action.receiver, amount, "buyFromPlatform");
+    Asset.transfer(Action.sender, Action.receiver, amount, 'buyFromPlatform');
 
     const unitInfo: UnitInfo = new UnitInfo();
     unitInfo.rId = this._generateRID();
@@ -342,7 +348,7 @@ class Game extends Contract {
     this.dbUser.modify(user);
   }
 
-  @action("pureview")
+  @action('pureview')
   getMyUnitIdArray(): string {
     const user = new User();
     const userExisting = this.dbUser.get(Action.sender, user);
@@ -350,7 +356,7 @@ class Game extends Contract {
       return '[]';
     }
 
-    let result = "";
+    var result = '';
 
     for (let i = 0; i < user.unitIdArray.length; ++i) {
       result = result + u16ToString(u16(user.unitIdArray[i]));
@@ -359,7 +365,7 @@ class Game extends Contract {
     return result;
   }
 
-  @action("pureview")
+  @action('pureview')
   getMyUnitById(unitId: u64): string {
     const unit = new Unit();
     const unitExisting = this.dbUnit.get(unitId, unit);
@@ -380,7 +386,7 @@ class Game extends Contract {
     return unitToStr(unit, unitInfo, now());
   }
 
-  @action("pureview")
+  @action('pureview')
   getMyItemRIdArray(): string {
     const user = new User();
     const userExisting = this.dbUser.get(Action.sender, user);
@@ -388,7 +394,7 @@ class Game extends Contract {
       return '[]';
     }
 
-    let result = "";
+    var result = '';
 
     for (let i = 0; i < user.itemRIdArray.length; ++i) {
       result = result + u16ToString(u16(user.itemRIdArray[i]));
@@ -397,7 +403,7 @@ class Game extends Contract {
     return result;
   }
 
-  @action("pureview")
+  @action('pureview')
   getMyItemByRId(rId: u64): string {
     const itemInfo: ItemInfo = new ItemInfo();
     const infoExisting = this.dbItemInfo.get(rId, itemInfo);
@@ -411,7 +417,7 @@ class Game extends Contract {
   }
 
   _maybeDrop(stageBattle: StageBattle, nonce: u16): string {
-    let result = "";
+    var result = '';
 
     for (let i: u16 = 0; i < u16(stageBattle.dropItemIdArray.length); ++i) {
       const itemId: u64 = stageBattle.dropItemIdArray[i];
@@ -430,15 +436,15 @@ class Game extends Contract {
 
   @action
   battleWithStage(unitIdArray: u64[], stageId: u64, battleIndex: u64): string {
-    ultrain_assert(unitIdArray.length == UNIT_LIMIT, "UNIT_LIMIT");
+    ultrain_assert(unitIdArray.length == UNIT_LIMIT, 'UNIT_LIMIT');
 
     const user = new User();
     const userExisting = this.dbUser.get(Action.sender, user);
-    ultrain_assert(userExisting, "User exists");
+    ultrain_assert(userExisting, 'User exists');
 
     const battleStatus: BattleStatus = new BattleStatus();
 
-    let i: i32;
+    var i: i32;
 
     // Fill in my status
 
@@ -448,7 +454,7 @@ class Game extends Contract {
       if (unitIdArray[i]) {
         const unit = new Unit();
         const unitExisting = this.dbUnit.get(unitIdArray[i], unit);
-        ultrain_assert(unitExisting, "Unit exists");
+        ultrain_assert(unitExisting, 'Unit exists');
 
         const index = user.unitIdArray.indexOf(unitIdArray[i]);
         ultrain_assert(index >= 0, 'have unit');
@@ -482,22 +488,22 @@ class Game extends Contract {
     }
 
     // Fill in npc status
-    const dbStageBattle = new DBManager<StageBattle>(NAME('tb.stagebat'), stageId);
+    const dbStageBattle = new DBManager<StageBattle>(NAME(tbStageBattle), stageId);
 
     const sb = new StageBattle();
-    let existingSB = dbStageBattle.get(battleIndex, sb);
+    const existingSB = dbStageBattle.get(battleIndex, sb);
 
-    ultrain_assert(existingSB, "StageBattle exists");
-    ultrain_assert(sb.npcUnitIdArray.length == UNIT_LIMIT, "NPC amount");
-    ultrain_assert(sb.npcLevelArray.length == UNIT_LIMIT, "NPC amount");
+    ultrain_assert(existingSB, 'StageBattle exists');
+    ultrain_assert(sb.npcUnitIdArray.length == UNIT_LIMIT, 'NPC amount');
+    ultrain_assert(sb.npcLevelArray.length == UNIT_LIMIT, 'NPC amount');
 
     for (i = 0; i < sb.npcUnitIdArray.length; ++i) {
       const unitStatus: UnitStatus = new UnitStatus();
-      
+
       if (sb.npcUnitIdArray[i]) {
         const unit = new Unit();
         const unitExisting = this.dbUnit.get(sb.npcUnitIdArray[i], unit);
-        ultrain_assert(unitExisting, "Unit exists");
+        ultrain_assert(unitExisting, 'Unit exists');
 
         unitStatus.fromNPC(unit, sb.npcLevelArray[i]);
       }

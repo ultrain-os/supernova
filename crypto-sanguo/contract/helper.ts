@@ -1,13 +1,11 @@
 import { now } from "ultrain-ts-lib/src/time";
 
-
 import {
   Unit,
   UnitInfo,
   Item,
   ItemInfo
 } from './data_in_db';
-
 
 const MAX_ENERGY: u8 = 5;
 const ALPHABET = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -37,9 +35,9 @@ export function unitLuck(unit: Unit, level: u8): u16 {
 }
 
 export function unitRecoverCost(unit: Unit, level: u8): u16 {
-  let cost = u16(unit.recoverCost);
+  var cost = u16(unit.recoverCost);
 
-  for (let i:u8 = 1; i < level; ++i) {
+  for (let i: u8 = 1; i < level; ++i) {
     cost = cost * 11 / 10;
   }
 
@@ -47,9 +45,9 @@ export function unitRecoverCost(unit: Unit, level: u8): u16 {
 }
 
 export function unitUpgradeCost(unit: Unit, level: u8): u16 {
-  let cost = u16(unit.upgradeCost);
+  var cost = u16(unit.upgradeCost);
 
-  for (let i:u8 = 1; i < level; ++i) {
+  for (let i: u8 = 1; i < level; ++i) {
     cost = cost * 11 / 10;
   }
 
@@ -68,8 +66,8 @@ export function unitToStr(unit: Unit, unitInfo: UnitInfo, now: u32): string {
   const realAmount = unitInfo.energyAmount +
       u8((now - unitInfo.energyTime) / (3600));
 
-  let energyAmount: u8;
-  let energyTime: u32;
+  var energyAmount: u8;
+  var energyTime: u32;
 
   if (realAmount > MAX_ENERGY) {
     energyAmount = MAX_ENERGY;
@@ -140,9 +138,9 @@ export function itemToStr(item: Item, itemInfo: ItemInfo): string {
 }
 
 export function random(nonce: u16) : u16 {
-  const seed = now() + nonce;
-  const str = Math.log(seed).toString();
-  const len = str.length;
+  const seed: u32 = now() + nonce;
+  const str: string = Math.log(seed).toString();
+  const len: i32 = str.length;
 
-  return u16(parseInt(str[len - 5] + str[len - 4] + str[len - 3] + str[len - 2] + str[len - 1]));
+  return u16(parseInt(str[len - 5] + str[len - 4] + str[len - 3] + str[len - 2] + str[len - 1], 10));
 }

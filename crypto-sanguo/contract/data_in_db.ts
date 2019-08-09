@@ -1,6 +1,5 @@
 import { NAME, RNAME } from 'ultrain-ts-lib/src/account';
 
-
 export class Unit implements Serializable {
   @primaryid
   unitId: u64;
