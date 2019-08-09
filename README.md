@@ -12,4 +12,5 @@
 * Last Trip：区块链游戏Last Tri
 * crypto-sanguo: 加密三国志游戏
 * fansclub: 粉丝论坛
+* deswap: Deswap
 
