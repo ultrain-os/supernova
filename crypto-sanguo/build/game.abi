@@ -1,0 +1,822 @@
+{
+  "version": "ultraio:1.0",
+  "types": [
+    {
+      "new_type_name": "u64",
+      "type": "uint64"
+    },
+    {
+      "new_type_name": "u16",
+      "type": "uint16"
+    },
+    {
+      "new_type_name": "u8",
+      "type": "uint8"
+    },
+    {
+      "new_type_name": "Asset",
+      "type": "asset"
+    },
+    {
+      "new_type_name": "u32",
+      "type": "uint32"
+    },
+    {
+      "new_type_name": "account_name",
+      "type": "name"
+    },
+    {
+      "new_type_name": "boolean",
+      "type": "bool"
+    }
+  ],
+  "structs": [
+    {
+      "fields": [
+        {
+          "name": "unitId",
+          "type": "u64"
+        },
+        {
+          "name": "hp",
+          "type": "u16"
+        },
+        {
+          "name": "hpStep",
+          "type": "u16"
+        },
+        {
+          "name": "attack",
+          "type": "u16"
+        },
+        {
+          "name": "attackStep",
+          "type": "u16"
+        },
+        {
+          "name": "intelligence",
+          "type": "u16"
+        },
+        {
+          "name": "intelligenceStep",
+          "type": "u16"
+        },
+        {
+          "name": "defense",
+          "type": "u16"
+        },
+        {
+          "name": "defenseStep",
+          "type": "u16"
+        },
+        {
+          "name": "agility",
+          "type": "u16"
+        },
+        {
+          "name": "agilityStep",
+          "type": "u16"
+        },
+        {
+          "name": "luck",
+          "type": "u16"
+        },
+        {
+          "name": "luckStep",
+          "type": "u16"
+        },
+        {
+          "name": "price",
+          "type": "u64"
+        },
+        {
+          "name": "priceStep",
+          "type": "u64"
+        }
+      ],
+      "base": "",
+      "name": "addUnit"
+    },
+    {
+      "fields": [
+        {
+          "name": "itemId",
+          "type": "u64"
+        },
+        {
+          "name": "hp",
+          "type": "u16"
+        },
+        {
+          "name": "attack",
+          "type": "u16"
+        },
+        {
+          "name": "intelligence",
+          "type": "u16"
+        },
+        {
+          "name": "defense",
+          "type": "u16"
+        },
+        {
+          "name": "agility",
+          "type": "u16"
+        },
+        {
+          "name": "luck",
+          "type": "u16"
+        },
+        {
+          "name": "worth",
+          "type": "u64"
+        }
+      ],
+      "base": "",
+      "name": "addItem"
+    },
+    {
+      "fields": [
+        {
+          "name": "stageId",
+          "type": "u64"
+        },
+        {
+          "name": "battleIndex",
+          "type": "u64"
+        },
+        {
+          "name": "npcUnitIdArray",
+          "type": "u64[]"
+        },
+        {
+          "name": "npcLevelArray",
+          "type": "u8[]"
+        },
+        {
+          "name": "dropItemIdArray",
+          "type": "u64[]"
+        },
+        {
+          "name": "dropChanceArray",
+          "type": "u16[]"
+        },
+        {
+          "name": "dropSGTLow",
+          "type": "u64"
+        },
+        {
+          "name": "dropSGTHigh",
+          "type": "u64"
+        }
+      ],
+      "base": "",
+      "name": "setBattleInStage"
+    },
+    {
+      "fields": [
+        {
+          "name": "stageId",
+          "type": "u64"
+        },
+        {
+          "name": "dependencyStageId",
+          "type": "u64"
+        },
+        {
+          "name": "battleAmount",
+          "type": "u8"
+        }
+      ],
+      "base": "",
+      "name": "setStage"
+    },
+    {
+      "fields": [],
+      "base": "",
+      "name": "start"
+    },
+    {
+      "fields": [],
+      "base": "",
+      "name": "isStarted"
+    },
+    {
+      "fields": [
+        {
+          "name": "stageId",
+          "type": "u64"
+        },
+        {
+          "name": "battleIndex",
+          "type": "u64"
+        }
+      ],
+      "base": "",
+      "name": "canPlay"
+    },
+    {
+      "fields": [
+        {
+          "name": "stageId",
+          "type": "u64"
+        }
+      ],
+      "base": "",
+      "name": "getProgress"
+    },
+    {
+      "fields": [
+        {
+          "name": "stageId",
+          "type": "u64"
+        },
+        {
+          "name": "battleIndex",
+          "type": "u64"
+        }
+      ],
+      "base": "",
+      "name": "finishStageBattle"
+    },
+    {
+      "fields": [
+        {
+          "name": "unitId",
+          "type": "u64"
+        },
+        {
+          "name": "amount",
+          "type": "Asset"
+        }
+      ],
+      "base": "",
+      "name": "buyFromPlatform"
+    },
+    {
+      "fields": [],
+      "base": "",
+      "name": "getMyUnitIdArray"
+    },
+    {
+      "fields": [
+        {
+          "name": "unitId",
+          "type": "u64"
+        }
+      ],
+      "base": "",
+      "name": "getMyUnitById"
+    },
+    {
+      "fields": [],
+      "base": "",
+      "name": "getMyItemRIdArray"
+    },
+    {
+      "fields": [
+        {
+          "name": "rId",
+          "type": "u64"
+        }
+      ],
+      "base": "",
+      "name": "getMyItemByRId"
+    },
+    {
+      "fields": [
+        {
+          "name": "unitIdArray",
+          "type": "u64[]"
+        },
+        {
+          "name": "stageId",
+          "type": "u64"
+        },
+        {
+          "name": "battleIndex",
+          "type": "u64"
+        }
+      ],
+      "base": "",
+      "name": "battleWithStage"
+    },
+    {
+      "fields": [
+        {
+          "name": "unitId",
+          "type": "u64"
+        },
+        {
+          "name": "hp",
+          "type": "u16"
+        },
+        {
+          "name": "hpStep",
+          "type": "u16"
+        },
+        {
+          "name": "attack",
+          "type": "u16"
+        },
+        {
+          "name": "attackStep",
+          "type": "u16"
+        },
+        {
+          "name": "intelligence",
+          "type": "u16"
+        },
+        {
+          "name": "intelligenceStep",
+          "type": "u16"
+        },
+        {
+          "name": "defense",
+          "type": "u16"
+        },
+        {
+          "name": "defenseStep",
+          "type": "u16"
+        },
+        {
+          "name": "agility",
+          "type": "u16"
+        },
+        {
+          "name": "agilityStep",
+          "type": "u16"
+        },
+        {
+          "name": "luck",
+          "type": "u16"
+        },
+        {
+          "name": "luckStep",
+          "type": "u16"
+        },
+        {
+          "name": "recoverCost",
+          "type": "u64"
+        },
+        {
+          "name": "upgradeCost",
+          "type": "u64"
+        },
+        {
+          "name": "price",
+          "type": "u64"
+        },
+        {
+          "name": "priceStep",
+          "type": "u64"
+        },
+        {
+          "name": "soldAmount",
+          "type": "u32"
+        }
+      ],
+      "base": "",
+      "name": "Unit"
+    },
+    {
+      "fields": [
+        {
+          "name": "itemId",
+          "type": "u64"
+        },
+        {
+          "name": "hp",
+          "type": "u16"
+        },
+        {
+          "name": "attack",
+          "type": "u16"
+        },
+        {
+          "name": "intelligence",
+          "type": "u16"
+        },
+        {
+          "name": "defense",
+          "type": "u16"
+        },
+        {
+          "name": "agility",
+          "type": "u16"
+        },
+        {
+          "name": "luck",
+          "type": "u16"
+        },
+        {
+          "name": "worth",
+          "type": "u64"
+        }
+      ],
+      "base": "",
+      "name": "Item"
+    },
+    {
+      "fields": [
+        {
+          "name": "fixedId",
+          "type": "u64"
+        },
+        {
+          "name": "rId",
+          "type": "u64"
+        }
+      ],
+      "base": "",
+      "name": "RID"
+    },
+    {
+      "fields": [
+        {
+          "name": "rId",
+          "type": "u64"
+        },
+        {
+          "name": "unitId",
+          "type": "u64"
+        },
+        {
+          "name": "level",
+          "type": "u8"
+        },
+        {
+          "name": "itemRIdArray",
+          "type": "u8[]"
+        },
+        {
+          "name": "energyAmount",
+          "type": "u8"
+        },
+        {
+          "name": "energyTime",
+          "type": "u32"
+        }
+      ],
+      "base": "",
+      "name": "UnitInfo"
+    },
+    {
+      "fields": [
+        {
+          "name": "rId",
+          "type": "u64"
+        },
+        {
+          "name": "itemId",
+          "type": "u64"
+        },
+        {
+          "name": "level",
+          "type": "u8"
+        },
+        {
+          "name": "score",
+          "type": "u8"
+        },
+        {
+          "name": "mountedByUnitId",
+          "type": "u16"
+        }
+      ],
+      "base": "",
+      "name": "ItemInfo"
+    },
+    {
+      "fields": [
+        {
+          "name": "stageId",
+          "type": "u64"
+        },
+        {
+          "name": "dependencyStageId",
+          "type": "u64"
+        },
+        {
+          "name": "battleAmount",
+          "type": "u8"
+        }
+      ],
+      "base": "",
+      "name": "Stage"
+    },
+    {
+      "fields": [
+        {
+          "name": "battleIndex",
+          "type": "u64"
+        },
+        {
+          "name": "npcUnitIdArray",
+          "type": "u64[]"
+        },
+        {
+          "name": "npcLevelArray",
+          "type": "u8[]"
+        },
+        {
+          "name": "dropItemIdArray",
+          "type": "u64[]"
+        },
+        {
+          "name": "dropChanceArray",
+          "type": "u16[]"
+        },
+        {
+          "name": "dropSGTLow",
+          "type": "u64"
+        },
+        {
+          "name": "dropSGTHigh",
+          "type": "u64"
+        }
+      ],
+      "base": "",
+      "name": "StageBattle"
+    },
+    {
+      "fields": [
+        {
+          "name": "user",
+          "type": "account_name"
+        },
+        {
+          "name": "battleIndex",
+          "type": "u64"
+        },
+        {
+          "name": "finished",
+          "type": "boolean"
+        }
+      ],
+      "base": "",
+      "name": "StageProgress"
+    },
+    {
+      "fields": [
+        {
+          "name": "time",
+          "type": "u64"
+        },
+        {
+          "name": "fromName",
+          "type": "string"
+        },
+        {
+          "name": "toName",
+          "type": "string"
+        },
+        {
+          "name": "record",
+          "type": "string"
+        }
+      ],
+      "base": "",
+      "name": "Duel"
+    },
+    {
+      "fields": [
+        {
+          "name": "user",
+          "type": "account_name"
+        },
+        {
+          "name": "defenseUnitIdArray",
+          "type": "u16[]"
+        },
+        {
+          "name": "duelScore",
+          "type": "u32"
+        },
+        {
+          "name": "winTime",
+          "type": "u32"
+        },
+        {
+          "name": "loseTime",
+          "type": "u32"
+        },
+        {
+          "name": "unitIdArray",
+          "type": "u64[]"
+        },
+        {
+          "name": "unitRIdArray",
+          "type": "u64[]"
+        },
+        {
+          "name": "itemRIdArray",
+          "type": "u64[]"
+        },
+        {
+          "name": "record",
+          "type": "string"
+        },
+        {
+          "name": "duelHistory",
+          "type": "Duel[]"
+        }
+      ],
+      "base": "",
+      "name": "User"
+    }
+  ],
+  "actions": [
+    {
+      "ricardian_contract": "",
+      "name": "addUnit",
+      "type": "addUnit",
+      "ability": "normal"
+    },
+    {
+      "ricardian_contract": "",
+      "name": "addItem",
+      "type": "addItem",
+      "ability": "normal"
+    },
+    {
+      "ricardian_contract": "",
+      "name": "setBattleInStage",
+      "type": "setBattleInStage",
+      "ability": "normal"
+    },
+    {
+      "ricardian_contract": "",
+      "name": "setStage",
+      "type": "setStage",
+      "ability": "normal"
+    },
+    {
+      "ricardian_contract": "",
+      "name": "start",
+      "type": "start",
+      "ability": "normal"
+    },
+    {
+      "ricardian_contract": "",
+      "name": "isStarted",
+      "type": "isStarted",
+      "ability": "pureview"
+    },
+    {
+      "ricardian_contract": "",
+      "name": "canPlay",
+      "type": "canPlay",
+      "ability": "pureview"
+    },
+    {
+      "ricardian_contract": "",
+      "name": "getProgress",
+      "type": "getProgress",
+      "ability": "pureview"
+    },
+    {
+      "ricardian_contract": "",
+      "name": "finishStageBattle",
+      "type": "finishStageBattle",
+      "ability": "normal"
+    },
+    {
+      "ricardian_contract": "",
+      "name": "buyFromPlatform",
+      "type": "buyFromPlatform",
+      "ability": "normal"
+    },
+    {
+      "ricardian_contract": "",
+      "name": "getMyUnitIdArray",
+      "type": "getMyUnitIdArray",
+      "ability": "pureview"
+    },
+    {
+      "ricardian_contract": "",
+      "name": "getMyUnitById",
+      "type": "getMyUnitById",
+      "ability": "pureview"
+    },
+    {
+      "ricardian_contract": "",
+      "name": "getMyItemRIdArray",
+      "type": "getMyItemRIdArray",
+      "ability": "pureview"
+    },
+    {
+      "ricardian_contract": "",
+      "name": "getMyItemByRId",
+      "type": "getMyItemByRId",
+      "ability": "pureview"
+    },
+    {
+      "ricardian_contract": "",
+      "name": "battleWithStage",
+      "type": "battleWithStage",
+      "ability": "normal"
+    }
+  ],
+  "tables": [
+    {
+      "index_type": "i64",
+      "keys_names": [
+        "currency"
+      ],
+      "keys_types": [
+        "uint64"
+      ],
+      "name": "tb.unit",
+      "type": "Unit"
+    },
+    {
+      "index_type": "i64",
+      "keys_names": [
+        "currency"
+      ],
+      "keys_types": [
+        "uint64"
+      ],
+      "name": "tb.item",
+      "type": "Item"
+    },
+    {
+      "index_type": "i64",
+      "keys_names": [
+        "currency"
+      ],
+      "keys_types": [
+        "uint64"
+      ],
+      "name": "tb.rid",
+      "type": "RID"
+    },
+    {
+      "index_type": "i64",
+      "keys_names": [
+        "currency"
+      ],
+      "keys_types": [
+        "uint64"
+      ],
+      "name": "tb.unitinfo",
+      "type": "UnitInfo"
+    },
+    {
+      "index_type": "i64",
+      "keys_names": [
+        "currency"
+      ],
+      "keys_types": [
+        "uint64"
+      ],
+      "name": "tb.iteminfo",
+      "type": "ItemInfo"
+    },
+    {
+      "index_type": "i64",
+      "keys_names": [
+        "currency"
+      ],
+      "keys_types": [
+        "uint64"
+      ],
+      "name": "tb.stage",
+      "type": "Stage"
+    },
+    {
+      "index_type": "i64",
+      "keys_names": [
+        "currency"
+      ],
+      "keys_types": [
+        "uint64"
+      ],
+      "name": "tb.stagebat",
+      "type": "StageBattle"
+    },
+    {
+      "index_type": "i64",
+      "keys_names": [
+        "currency"
+      ],
+      "keys_types": [
+        "uint64"
+      ],
+      "name": "tb.stageprog",
+      "type": "StageProgress"
+    },
+    {
+      "index_type": "i64",
+      "keys_names": [
+        "currency"
+      ],
+      "keys_types": [
+        "uint64"
+      ],
+      "name": "tb.user",
+      "type": "User"
+    }
+  ]
+}
