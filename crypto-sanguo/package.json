@@ -1,0 +1,30 @@
+{
+  "name": "Crypto Sanguo",
+  "version": "0.0.1",
+  "description": "Crypto Sanguo in Ultrain",
+  "main": "contract/index.d.ts",
+  "typings": "index.d.ts",
+  "repository": "https://github.com/shipunyc/supernova/crypto-sanguo",
+  "license": "MIT",
+  "keywords": [
+    "sanguo,game"
+  ],
+  "engines": {
+    "node": ">=8.9"
+  },
+  "devDependencies": {
+    "async": "^2.6.1",
+    "chai": "^4.1.2",
+    "chai-as-promised": "^7.1.1",
+    "mocha": "^5.2.0",
+    "robin-lint": "^0.0.1",
+    "tslint": "^5.4.3",
+    "typescript": "^2.8.3",
+    "u3.js": "^0.3.12",
+    "ultrascript": "^1.1.0"
+  },
+  "dependencies": {
+    "ultrain-ts-lib": "^0.2.1"
+  },
+  "contract_name": "game"
+}
