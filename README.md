@@ -11,4 +11,5 @@
 * ChainIDE：ChainIDE项目
 * Last Trip：区块链游戏Last Tri
 * crypto-sanguo: 加密三国志游戏
+* fansclub: 粉丝论坛
 
