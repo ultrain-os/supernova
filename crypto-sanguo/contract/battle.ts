@@ -679,7 +679,7 @@ function _battleOneRound(index: u8,
 }
 
 function _createOneRecord(index: u16, targetIndex: u16, t: u16, result: u16) : string {
-  return String(index.toString()) + targetIndex.toString() + t.toString() + u16ToString(result);
+  return index.toString() + targetIndex.toString() + t.toString() + u16ToString(result);
 }
 
 function _createLongRecord(index: u8, targetIndex: u8, t: u8,

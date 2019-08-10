@@ -87,12 +87,13 @@ class Game extends Contract {
           agilityStep: u16,
           luck: u16,
           luckStep: u16,
+          recoverCost: u64,
+          upgradeCost: u64,
           price: u64,
           priceStep: u64): void {
     ultrain_assert(Action.sender == this.receiver, 'contract owner only');
 
     var existing = this.dbUnit.exists(unitId);
-    ultrain_assert(!existing, 'unit already exists');
 
     var unit = new Unit();
     unit.unitId = unitId;
@@ -112,11 +113,17 @@ class Game extends Contract {
     unit.priceStep = priceStep;
     unit.luck = luck;
     unit.luckStep = luckStep;
+    unit.recoverCost = recoverCost;
+    unit.upgradeCost = upgradeCost;
     unit.price = price;
     unit.priceStep = priceStep;
     unit.soldAmount = 0;
 
-    this.dbUnit.emplace(unit);
+    if (existing) {
+      this.dbUnit.modify(unit);
+    } else {
+      this.dbUnit.emplace(unit);
+    }
   }
 
   @action
@@ -215,16 +222,34 @@ class Game extends Contract {
     user.itemRIdArray = [];
     user.record = '';
     user.duelHistory = [];
+    user.tokenAmount = 0;
     this.dbUser.emplace(user);
   }
 
   @action('pureview')
-  isStarted(): boolean {
-    return this.dbUser.exists(Action.sender);
+  isStarted(name: string): boolean {
+    return this.dbUser.exists(NAME(name));
   }
 
   @action('pureview')
-  canPlay(stageId: u64, battleIndex: u64): boolean {
+  balanceOfUGAS(name: string): u64 {
+    const balance: Asset = Asset.balanceOf(NAME(name));
+    return balance.getAmount();
+  }
+
+  @action('pureview')
+  balanceOfToken(name: string): u64 {
+    const user = new User();
+    const userExisting = this.dbUser.get(NAME(name), user);
+    if (userExisting) {
+      return user.tokenAmount;
+    } else {
+      return 0;
+    }
+  }
+
+  @action('pureview')
+  canPlay(name: string, stageId: u64, battleIndex: u64): boolean {
     const stage = new Stage();
     const stageExisting = this.dbStage.get(stageId, stage);
 
@@ -235,7 +260,7 @@ class Game extends Contract {
     if (stage.dependencyStageId) {
       const dbP1 = new DBManager<StageProgress>(NAME(tbStageProgress), stage.dependencyStageId);
       const stageP1 = new StageProgress();
-      const existingP1 = dbP1.get(Action.sender, stageP1);
+      const existingP1 = dbP1.get(NAME(name), stageP1);
       if (!existingP1 || !stageP1.finished) {
         return false;
       }
@@ -243,7 +268,7 @@ class Game extends Contract {
 
     const dbP2 = new DBManager<StageProgress>(NAME(tbStageProgress), stageId);
     const stageP2 = new StageProgress();
-    const existingP2 = dbP2.get(Action.sender, stageP2);
+    const existingP2 = dbP2.get(NAME(name), stageP2);
 
     if (!existingP2) {
       return battleIndex == 0;
@@ -253,10 +278,10 @@ class Game extends Contract {
   }
 
   @action('pureview')
-  getProgress(stageId: u64): u64 {
+  getProgress(name:string, stageId: u64): u64 {
     const db = new DBManager<StageProgress>(NAME(tbStageProgress), stageId);
     const stageP = new StageProgress();
-    const existingP = db.get(Action.sender, stageP);
+    const existingP = db.get(NAME(name), stageP);
     if (!existingP) {
       return 0;
     }
@@ -271,8 +296,7 @@ class Game extends Contract {
     return a < b ? a : b;
   }
 
-  @action
-  finishStageBattle(stageId: u64, battleIndex: u64): void {
+  _finishStageBattle(stageId: u64, battleIndex: u64): void {
     const stage = new Stage();
     const stageExisting = this.dbStage.get(stageId, stage);
 
@@ -319,7 +343,7 @@ class Game extends Contract {
   }
 
   @action
-  buyFromPlatform(unitId: u64, amount: Asset): void {
+  buyUnitFromPlatform(unitId: u64): void {
     const unit = new Unit();
     const unitExisting = this.dbUnit.get(unitId, unit);
     ultrain_assert(unitExisting, 'unit exists');
@@ -329,10 +353,11 @@ class Game extends Contract {
     ultrain_assert(userExisting, 'user exists');
     ultrain_assert(user.unitIdArray.indexOf(unitId) < 0, 'already have unit');
 
-    const unitPrice: Asset = new Asset(unit.price, StringToSymbol(4, 'UGAS'));
-    ultrain_assert(amount.gte(unitPrice), 'need to pay enough');
+    // const unitPrice: Asset = new Asset(unit.price, StringToSymbol(4, 'UGAS'));
+    // const balance: Asset = Asset.balanceOf(Action.sender);
+    // ultrain_assert(balance.gte(unitPrice), 'balance not enough');
 
-    Asset.transfer(Action.sender, Action.receiver, amount, 'buyFromPlatform');
+    // Asset.transfer(Action.sender, Action.receiver, unitPrice, 'buyFromPlatform');
 
     const unitInfo: UnitInfo = new UnitInfo();
     unitInfo.rId = this._generateRID();
@@ -346,14 +371,82 @@ class Game extends Contract {
     user.unitIdArray.push(unitId);
     user.unitRIdArray.push(unitInfo.rId);
     this.dbUser.modify(user);
+
+    unit.price += unit.priceStep;
+    ++unit.soldAmount;
+
+    this.dbUnit.modify(unit);
+
+    // If defenseUnitIdArray is not full.
+    if (u8(user.defenseUnitIdArray.length) < UNIT_LIMIT) {
+      user.defenseUnitIdArray.push(unitId);
+    } else if (!user.defenseUnitIdArray[0]) {
+      user.defenseUnitIdArray[0] = unitId;
+    } else if (!user.defenseUnitIdArray[1]) {
+      user.defenseUnitIdArray[1] = unitId;
+    } else if (!user.defenseUnitIdArray[2]) {
+      user.defenseUnitIdArray[2] = unitId;
+    }
+
+    this.dbUser.modify(user);
   }
 
   @action('pureview')
-  getMyUnitIdArray(): string {
+  getDefenseUnitIdArray(name: string): string {
+    const user: User = new User();
+    const userExisting = this.dbUser.get(NAME(name), user);
+
+    ultrain_assert(userExisting, 'user exists');
+
+    var result = '';
+
+    if (user.defenseUnitIdArray[0]) {
+      result = result + u16ToString(u16(user.defenseUnitIdArray[0]));
+    } else if (user.defenseUnitIdArray[1]) {
+      result = result + u16ToString(u16(user.defenseUnitIdArray[1]));
+    } else if (user.defenseUnitIdArray[2]) {
+      result = result + u16ToString(u16(user.defenseUnitIdArray[2]));
+    }
+
+    return result;
+  }
+
+  @action('pureview')
+  getOffersFromPlatform(name: string): string {
+    var userExisting: boolean = false;
+    var user: User = new User();
+
+    if (name) {
+      userExisting = this.dbUser.get(NAME(name), user);
+    }
+
+    var cursor = this.dbUnit.cursor();
+
+    var result: string = '';
+
+    while(cursor.hasNext()) {
+      const u: Unit = cursor.get();
+
+      let hasUnit: u16 = 0;
+
+      if (userExisting) {
+        hasUnit = user.unitIdArray.indexOf(u.unitId) >= 0 ? 256 : 0;
+      }
+
+      result = result + u16ToString(u16(u.unitId + hasUnit)) + u16ToString(u16(u.price)) + u16ToString(u16(u.soldAmount));
+
+      cursor.next();
+    }
+
+    return result;
+  }
+
+  @action('pureview')
+  getMyUnitIdArray(name: string): string {
     const user = new User();
-    const userExisting = this.dbUser.get(Action.sender, user);
+    const userExisting = this.dbUser.get(NAME(name), user);
     if (!userExisting) {
-      return '[]';
+      return '';
     }
 
     var result = '';
@@ -366,13 +459,13 @@ class Game extends Contract {
   }
 
   @action('pureview')
-  getMyUnitById(unitId: u64): string {
+  getMyUnitById(name: string, unitId: u64): string {
     const unit = new Unit();
     const unitExisting = this.dbUnit.get(unitId, unit);
     ultrain_assert(unitExisting, 'unit exists');
 
     const user = new User();
-    const userExisting = this.dbUser.get(Action.sender, user);
+    const userExisting = this.dbUser.get(NAME(name), user);
     ultrain_assert(userExisting, 'user exists');
 
     const index = user.unitIdArray.indexOf(unitId);
@@ -387,9 +480,9 @@ class Game extends Contract {
   }
 
   @action('pureview')
-  getMyItemRIdArray(): string {
+  getMyItemRIdArray(name: string): string {
     const user = new User();
-    const userExisting = this.dbUser.get(Action.sender, user);
+    const userExisting = this.dbUser.get(NAME(name), user);
     if (!userExisting) {
       return '[]';
     }
