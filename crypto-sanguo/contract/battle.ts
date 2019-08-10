@@ -1,11 +1,9 @@
-import {BattleStatus, UnitStatus} from './data_in_memory';
-import {random, u16ToString} from './helper';
-
+import { BattleStatus, UnitStatus } from './data_in_memory';
+import { random, u16ToString } from './helper';
 
 const UNIT_LIMIT: u8 = 3;
 const ITEM_LIMIT: u8 = 3;
 const MAX_ENERGY: u8 = 5;
-
 
 class InnerResult {
 
@@ -29,11 +27,10 @@ export class BattleResult {
   }
 }
 
-
 export function processBattleResult(status: BattleStatus) : BattleResult {
-  let record: string = "";
+  var record: string = "";
 
-  let res: InnerResult = _checkResult(status);
+  var res: InnerResult = _checkResult(status);
 
   if (res.didFinish) {
     return new BattleResult(res.didIWin, record);
@@ -41,8 +38,8 @@ export function processBattleResult(status: BattleStatus) : BattleResult {
 
   record = "";
 
-  let i: u16;
-  let j: u8;
+  var i: u16;
+  var j: u8;
 
   for (i = 0; i < 1000; ++i) {
     let largest: u16 = 0;
@@ -113,8 +110,8 @@ export function processBattleResult(status: BattleStatus) : BattleResult {
 }
 
 function _checkResult(status: BattleStatus) : InnerResult {
-  let t: u16 = 0;
-  let i: u16;
+  var t: u16 = 0;
+  var i: u16;
 
   for (i = 0; i < UNIT_LIMIT; ++i) {
     if (status.myArray[i].hpR > 0) {
@@ -145,9 +142,9 @@ function _attack(status: BattleStatus,
                  index: u8,
                  targetIndex: u8,
                  extraDamage: u16) : u16 {
-  let attack: u16;
-  let defense: u16;
-  let damage: u16;
+  var attack: u16;
+  var defense: u16;
+  var damage: u16;
 
   if (index > UNIT_LIMIT) {
     attack = status.enemyArray[index - 1 - UNIT_LIMIT].attack;
@@ -185,13 +182,13 @@ function _attack(status: BattleStatus,
 function _attackAll(status: BattleStatus,
                     index: u8,
                     extraDamage: u16) : u16[] {
-  let attack: u16;
-  let defense: u16;
-  let damage: u16;
-  let result: u16[] = [];
-  result.push(0); 
-  result.push(0); 
-  result.push(0); 
+  var attack: u16;
+  var defense: u16;
+  var damage: u16;
+  var result: u16[] = [];
+  result.push(0);
+  result.push(0);
+  result.push(0);
 
   for (let targetIndex: u16 = 0; targetIndex < UNIT_LIMIT; ++targetIndex) {
     if (index > UNIT_LIMIT) {
@@ -239,8 +236,8 @@ function _attackAll(status: BattleStatus,
 }
 
 function  _getRandomUnit(unitArray: Array<UnitStatus>, offset: u16) : u8 {
-  let t: u8 = 0;
-  let i: u8;
+  var t: u8 = 0;
+  var i: u8;
 
   for (i = 0; i < UNIT_LIMIT; ++i) {
     if (unitArray[i].hpR > 0) {
@@ -282,7 +279,7 @@ function _findAllyWithLeastHp(unitArray: Array<UnitStatus>) : u8 {
 function _battleOneRound(index: u8,
                          round: u16,
                          status: BattleStatus): string {
-  let unitId: u64;
+  var unitId: u64;
 
   if (index > UNIT_LIMIT) {
     unitId = status.enemyArray[index - 1 - UNIT_LIMIT].unitId;
@@ -290,20 +287,20 @@ function _battleOneRound(index: u8,
     unitId = status.myArray[index - 1].unitId;
   }
 
-  let targetIndex: u8;
+  var targetIndex: u8;
 
   if (index > UNIT_LIMIT) {
-    targetIndex = this._getRandomUnit(status.myArray, round * UNIT_LIMIT * 2 + index);
+    targetIndex = _getRandomUnit(status.myArray, round * UNIT_LIMIT * 2 + index);
   } else {
-    targetIndex = this._getRandomUnit(status.enemyArray, round * UNIT_LIMIT * 2 + index);
+    targetIndex = _getRandomUnit(status.enemyArray, round * UNIT_LIMIT * 2 + index);
   }
 
-  let i: u8;
-  let n0: u8;
-  let t0: u16;
-  let t1: u16;
-  let result: u16;
-  let record: string;
+  var i: u8;
+  var n0: u8;
+  var t0: u16;
+  var t1: u16;
+  var result: u16;
+  var record: string;
 
   if (unitId == 1) {
     // On any enemy with less than 30% hp, inflict additional 20% damage.
@@ -606,7 +603,7 @@ function _battleOneRound(index: u8,
         } else {
           status.enemyArray[i].hpR = status.enemyArray[i].hp;
         }
-         
+
         t0 = status.enemyArray[i].hpR;
 
         record = _createTwoRecords(index, targetIndex, 0, result, i, 15, t0);

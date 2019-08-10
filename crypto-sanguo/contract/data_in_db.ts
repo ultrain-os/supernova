@@ -1,6 +1,5 @@
 import { NAME, RNAME } from 'ultrain-ts-lib/src/account';
 
-
 export class Unit implements Serializable {
   @primaryid
   unitId: u64;
@@ -113,7 +112,7 @@ export class User implements Serializable {
   @primaryid
   user: account_name;
 
-  defenseUnitIdArray: u16[];
+  defenseUnitIdArray: u64[];
   duelScore: u32;
   winTime: u32;
   loseTime: u32;
@@ -125,4 +124,6 @@ export class User implements Serializable {
   record: string;  // PvE record
 
   duelHistory: Duel[];  // Last 10 PvP records
+
+  tokenAmount: u64;
 }

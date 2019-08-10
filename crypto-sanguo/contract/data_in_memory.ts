@@ -20,9 +20,7 @@ import {
   itemLuck
 } from './helper';
 
-
 const ITEM_LIMIT: u8 = 3;
-
 
 export class UnitStatus {
   unitId: u64;
