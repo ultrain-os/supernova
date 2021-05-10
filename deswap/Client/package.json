@@ -8,7 +8,7 @@
     "history": "^4.9.0",
     "i18next": "^15.0.9",
     "i18next-browser-languagedetector": "^3.0.1",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.21",
     "node-sass": "^4.11.0",
     "react": "^16.8.6",
     "react-bootstrap": "^1.0.0-beta.8",
